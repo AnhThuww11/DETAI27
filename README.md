@@ -50,12 +50,14 @@ Khi phát hành phần mềm, phiên bản mới có thể làm tăng tỷ lệ 
 npm install
 
 # Chạy ứng dụng bản chuẩn (V1)
+$env:FAIL="false"
 npm start
 
 # Chạy ứng dụng giả lập lỗi (V2)
-FAIL=true npm start
-
+$env:FAIL="true"
+npm start
 ```
+
 ## 4. Phân công công việc
 
 Nhóm gồm 3 thành viên, phân chia công việc theo các nội dung chính của đề tài. Các thành viên phối hợp với nhau trong quá trình tích hợp, kiểm thử và hoàn thiện sản phẩm.
