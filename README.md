@@ -50,7 +50,6 @@ Khi phát hành phần mềm, phiên bản mới có thể làm tăng tỷ lệ 
 npm install
 
 # Chạy ứng dụng bản chuẩn (V1)
-$env:FAIL="false"
 npm start
 
 # Chạy ứng dụng giả lập lỗi (V2)
