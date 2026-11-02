@@ -34,6 +34,27 @@ Khi phát hành phần mềm, phiên bản mới có thể làm tăng tỷ lệ 
 | k6                                  | Tạo tải thử nghiệm                                               |
 | Trivy (dự kiến)                     | Quét lỗ hổng bảo mật của Docker image                            |
 
+
+### 3.1. Thông số kỹ thuật ứng dụng
+
+- **Ngôn ngữ / Framework:** Node.js (Express.js)
+- **Cổng ứng dụng (Port):** `3000`
+- **Health Check Endpoint:** `GET /health`
+- **Prometheus Metrics Endpoint:** `GET /metrics`
+- **Cấu hình giả lập lỗi V2:** Biến môi trường `FAIL=true` (Trả về HTTP status `500` để thử nghiệm Auto-Rollback)
+
+### 3.2 Hướng dẫn chạy ứng dụng cục bộ (Local Run)
+
+```bash
+# Cài đặt thư viện
+npm install
+
+# Chạy ứng dụng bản chuẩn (V1)
+npm start
+
+# Chạy ứng dụng giả lập lỗi (V2)
+FAIL=true npm start
+
 ## 4. Phân công công việc
 
 Nhóm gồm 3 thành viên, phân chia công việc theo các nội dung chính của đề tài. Các thành viên phối hợp với nhau trong quá trình tích hợp, kiểm thử và hoàn thiện sản phẩm.
