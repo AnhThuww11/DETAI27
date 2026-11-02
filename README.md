@@ -101,30 +101,7 @@ Các chỉ số chính:
 
 Prometheus cung cấp dữ liệu metric. Argo Rollouts và cấu hình `AnalysisTemplate` sẽ dùng kết quả phân tích để quyết định tiếp tục hay dừng rollout. Nhóm cần kiểm chứng việc phục hồi traffic về phiên bản ổn định trong thực nghiệm.
 
-## 6. Cấu trúc thư mục.
-
-```text
-DETAI27/
-├── .github/
-│   └── workflows/
-│       └── ci-cd.yml
-├── app/
-│   ├── src/
-│   └── tests/
-├── Dockerfile
-├── k8s/
-│   ├── blue-green/
-│   ├── canary/
-│   └── staging/
-├── monitoring/
-├── load-test/
-├── docs/
-│   └── experiment-results.md
-├── .gitignore
-└── README.md
-```
-
-## 7. Quy trình làm việc.
+## 6. Quy trình làm việc.
 
 Mỗi thành viên tạo nhánh riêng và làm việc trên nhánh của mình, kiểm tra mã nguồn trước khi hợp nhất vào `main`. Các thành viên thực hiện lần lượt theo các bước sau.
 
@@ -207,7 +184,7 @@ git push origin main
 - Nếu `main` có thay đổi mới trong lúc đang làm việc, cần cập nhật và xử lý xung đột trước khi hợp nhất.
 - Nếu có xung đột khi hợp nhất, cần xử lý xong và kiểm tra lại trước khi push `main`.
 
-## 8. Kế hoạch thực nghiệm và minh chứng
+## 7. Kế hoạch thực nghiệm và minh chứng
 
 | Hạng mục                     | Cần làm                                                      | Minh chứng                                                  |
 | ---------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------- |
@@ -232,7 +209,7 @@ git push origin main
 
 Ngưỡng metric và kết quả đo sẽ được ghi sau khi nhóm thực nghiệm, không điền số liệu giả định vào báo cáo kết quả.
 
-## 9. Checklist hoàn thành
+## 8. Checklist hoàn thành
 
 - [ ] Pipeline chạy được từ commit và có các bước kiểm thử, build, quét, triển khai theo cấu hình.
 - [ ] Docker image có version và truy vết được về commit.
@@ -245,7 +222,7 @@ Ngưỡng metric và kết quả đo sẽ được ghi sau khi nhóm thực nghi
 - [ ] Có bảng so sánh Blue-Green và Canary.
 - [ ] Có log, ảnh chụp và kết quả thực nghiệm phục vụ báo cáo.
 
-## 10. Tài liệu tham khảo
+## 9. Tài liệu tham khảo
 
 Đề tài bám theo đề cương học phần, các tài liệu gợi ý **[30], [55], [56]** và **Bài giảng Chương 5**. Thông tin thư mục chi tiết sẽ được bổ sung khi nhóm đối chiếu với danh mục tài liệu chính thức của môn học.
 
