@@ -140,7 +140,7 @@ git pull origin main
 Tạo nhánh mới phù hợp với công việc được thực hiện.
 
 ```bash
-git switch -c feature/ten-cong-viec
+git switch -c feature/ten-nhanh-cua-ban
 ```
 
 ### Bước 3: Kiểm tra các thay đổi
@@ -168,7 +168,7 @@ git commit -m "feat: mô tả công việc đã thực hiện"
 Lần đầu:
 
 ```bash
-git push -u origin feature/ten-cong-viec
+git push -u origin feature/ten-nhanh-cua-ban
 ```
 
 Các lần sau:
@@ -191,7 +191,7 @@ git pull origin main
 Sau đó hợp nhất nhánh công việc vào `main`:
 
 ```bash
-git merge feature/ten-cong-viec
+git merge feature/ten-nhanh-cua-ban
 ```
 
 Cuối cùng, đẩy nhánh `main` đã cập nhật lên GitHub:
