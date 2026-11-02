@@ -3,7 +3,6 @@ const client = require('prom-client');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// C?u hình Prometheus Metrics
 const collectDefaultMetrics = client.collectDefaultMetrics;
 collectDefaultMetrics({ timeout: 5000 });
 
@@ -30,4 +29,4 @@ app.get('/metrics', async (req, res) => {
   res.end(await client.register.metrics());
 });
 
-app.listen(port, () => console.log(App running on port ));
+app.listen(port, () => console.log(`App running on port ${port}`));
