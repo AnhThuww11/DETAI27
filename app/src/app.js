@@ -662,8 +662,8 @@ const getPageHtml = () => {
             <span>02</span>
           </div>
 
-          <h3>HỌ VÀ TÊN THÀNH VIÊN 2</h3>
-          <div class="student-id">MSSV: ................</div>
+          <h3>Phùng Xuân Trung</h3>
+          <div class="student-id">MSSV: 075206003583 </div>
 
           <span class="member-role">KUBERNETES & ROLLOUTS</span>
 
