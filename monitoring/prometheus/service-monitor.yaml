@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: detai27-app
+  namespace: monitoring
+  labels:
+    app: detai27-app
+spec:
+  namespaceSelector:
+    matchNames: [detai27]
+  selector:
+    matchLabels:
+      app: detai27-app
+      monitoring: enabled
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 10s
+      scrapeTimeout: 5s
+      relabelings:
+        - sourceLabels: [__meta_kubernetes_service_label_monitoring_role]
+          targetLabel: traffic_role

@@ -1,0 +1,13 @@
+grafana:
+  enabled: true
+  adminPassword: "change-me-before-deploy"
+  service:
+    type: ClusterIP
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelector: {}
+    serviceMonitorNamespaceSelector: {}
+    retention: 3d
+alertmanager:
+  enabled: false

@@ -1,0 +1,94 @@
+# Standalone demonstration manifest. Coordinate with member 2 before applying
+# to an existing Rollout with the same name.
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: detai27-app
+  namespace: detai27
+spec:
+  replicas: 4
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels: {app: detai27-app}
+  template:
+    metadata:
+      labels: {app: detai27-app}
+    spec:
+      containers:
+        - name: app
+          image: detai27-app:v1
+          imagePullPolicy: IfNotPresent
+          ports: [{name: http, containerPort: 3000}]
+          env: [{name: FAIL, value: 'false'}]
+          # /health returns 500 in the deliberately faulty V2.
+          # Use /metrics for readiness ONLY in this failure-injection demo.
+          readinessProbe:
+            httpGet: {path: /metrics, port: http}
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: {path: /metrics, port: http}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+  strategy:
+    canary:
+      stableService: detai27-stable
+      canaryService: detai27-canary
+      trafficRouting:
+        nginx:
+          stableIngress: detai27-ingress
+      steps:
+        - setWeight: 25
+        - pause: {duration: 45s}
+        - analysis:
+            templates:
+              - templateName: detai27-canary-quality
+        - setWeight: 50
+        - pause: {duration: 30s}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: detai27-stable
+  namespace: detai27
+  labels: {app: detai27-app, monitoring: enabled, monitoring-role: stable}
+spec:
+  selector: {app: detai27-app}
+  ports: [{name: http, port: 80, targetPort: http}]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: detai27-canary
+  namespace: detai27
+  labels: {app: detai27-app, monitoring: enabled, monitoring-role: canary}
+spec:
+  selector: {app: detai27-app}
+  ports: [{name: http, port: 80, targetPort: http}]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: detai27-public
+  namespace: detai27
+spec:
+  selector: {app: detai27-app}
+  ports: [{name: http, port: 80, targetPort: http}]
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: detai27-ingress
+  namespace: detai27
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: detai27.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: detai27-stable
+                port: {number: 80}
