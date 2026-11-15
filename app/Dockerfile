@@ -1,7 +1,7 @@
-FROM node:18-alpine
+FROM node:22-alpine
 WORKDIR /usr/src/app
 COPY package*.json ./
-RUN npm install --only=production
+RUN npm ci --omit=dev
 COPY . .
 EXPOSE 3000
 CMD ["npm", "start"]
