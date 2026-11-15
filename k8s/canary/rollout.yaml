@@ -24,7 +24,8 @@ spec:
           image: demo-app:v1
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 3000
+            - name: http
+              containerPort: 3000
           env:
             - name: PORT
               value: "3000"
@@ -45,9 +46,22 @@ spec:
     canary:
       stableService: demo-app-stable
       canaryService: demo-app-canary
+      canaryMetadata:
+        labels:
+          traffic_role: canary
+      stableMetadata:
+        labels:
+          traffic_role: stable
       trafficRouting:
         nginx:
           stableIngress: demo-app-ingress
+      analysis:
+        startingStep: 1
+        templates:
+          - templateName: detai27-canary-quality
+        args:
+          - name: namespace
+            value: canary
       steps:
         - setWeight: 5
         - pause: { duration: 2m }

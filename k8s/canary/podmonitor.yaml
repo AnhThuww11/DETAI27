@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: demo-app
+  namespace: canary
+spec:
+  selector:
+    matchLabels:
+      app: demo-app
+  podMetricsEndpoints:
+    - port: http
+      path: /metrics
+  podTargetLabels:
+    - traffic_role
