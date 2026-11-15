@@ -21,7 +21,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: app/package-lock.json
 
@@ -49,8 +49,19 @@ jobs:
         run: |
           docker build \
             -f app/Dockerfile \
-            -t detai27-app:${{ github.sha }} \
+            -t demo-app:v1 \
+            -t demo-app:${{ github.sha }} \
             app
 
       - name: Display image information
-        run: docker images detai27-app
+        run: docker images demo-app
+
+      - name: Run Trivy Security Scan
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: 'demo-app:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
