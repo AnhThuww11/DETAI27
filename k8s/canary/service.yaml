@@ -3,24 +3,34 @@ kind: Service
 metadata:
   name: demo-app-stable
   namespace: canary
+  labels:
+    app: demo-app
+    monitoring: enabled
+    monitoring-role: stable
 spec:
   selector:
     app: demo-app
   ports:
-    - port: 80
-      targetPort: 3000
+  - port: 80
+    targetPort: 3000
+    name: http
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: demo-app-canary
   namespace: canary
+  labels:
+    app: demo-app
+    monitoring: enabled
+    monitoring-role: canary
 spec:
   selector:
     app: demo-app
   ports:
-    - port: 80
-      targetPort: 3000
+  - port: 80
+    targetPort: 3000
+    name: http
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -30,13 +40,13 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: canary.local
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: demo-app-stable
-                port:
-                  number: 80
+  - host: canary.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: demo-app-stable
+            port:
+              number: 80

@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: detai27-canary-quality
+  namespace: canary
+spec:
+  args:
+    - name: prometheus-url
+      value: http://monitoring-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+    - name: namespace
+      value: canary
+  metrics:
+    - name: canary-http-5xx-rate
+      interval: 20s
+      count: 4
+      initialDelay: 25s
+      successCondition: len(result) == 1 && result[0] >= 0 && result[0] <= 0.05
+      failureCondition: len(result) != 1 || result[0] < 0 || result[0] > 0.05
+      failureLimit: 0
+      inconclusiveLimit: 0
+      provider:
+        prometheus:
+          address: '{{args.prometheus-url}}'
+          query: |
+            (
+              (
+                (sum(rate(http_requests_total{namespace="{{args.namespace}}",traffic_role="canary",route="/",status=~"5.."}[1m])) or vector(0))
+                /
+                clamp_min((sum(rate(http_requests_total{namespace="{{args.namespace}}",traffic_role="canary",route="/"}[1m])) or vector(0)), 0.000001)
+              )
+              +
+              ((sum(rate(http_requests_total{namespace="{{args.namespace}}",traffic_role="canary",route="/"}[1m])) or vector(0)) < bool 0.05)
+            ) or vector(1)
+    - name: canary-p95-latency-seconds
+      interval: 20s
+      count: 4
+      initialDelay: 25s
+      successCondition: len(result) == 1 && result[0] >= 0 && result[0] <= 0.5
+      failureCondition: len(result) != 1 || result[0] < 0 || result[0] > 0.5
+      failureLimit: 0
+      inconclusiveLimit: 0
+      provider:
+        prometheus:
+          address: '{{args.prometheus-url}}'
+          query: |
+            (
+              histogram_quantile(0.95,
+                sum by (le) (rate(http_request_duration_seconds_bucket{namespace="{{args.namespace}}",traffic_role="canary",route="/"}[1m]))
+              )
+              or vector(999)
+            )

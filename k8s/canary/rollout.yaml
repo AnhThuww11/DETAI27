@@ -20,28 +20,28 @@ spec:
         app: demo-app
     spec:
       containers:
-        - name: app
-          image: demo-app:v1
-          imagePullPolicy: IfNotPresent
-          ports:
-            - name: http
-              containerPort: 3000
-          env:
-            - name: PORT
-              value: "3000"
-            - name: FAIL
-              value: "false"
-          readinessProbe:
-            tcpSocket:
-              port: 3000
-            initialDelaySeconds: 3
-          resources:
-            requests:
-              cpu: 50m
-              memory: 64Mi
-            limits:
-              cpu: 200m
-              memory: 128Mi
+      - name: app
+        image: jzat11/detai27-app:latest
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 3000
+        env:
+        - name: PORT
+          value: '3000'
+        - name: FAIL
+          value: 'false'
+        readinessProbe:
+          tcpSocket:
+            port: 3000
+          initialDelaySeconds: 3
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
   strategy:
     canary:
       stableService: demo-app-stable
@@ -56,17 +56,20 @@ spec:
         nginx:
           stableIngress: demo-app-ingress
       analysis:
-        startingStep: 1
+        startingStep: 0
         templates:
-          - templateName: detai27-canary-quality
+        - templateName: detai27-canary-quality
         args:
-          - name: namespace
-            value: canary
+        - name: namespace
+          value: canary
       steps:
-        - setWeight: 5
-        - pause: { duration: 2m }
-        - setWeight: 25
-        - pause: { duration: 2m }
-        - setWeight: 50
-        - pause: { duration: 2m }
-        - setWeight: 100
+      - setWeight: 5
+      - pause:
+          duration: 2m
+      - setWeight: 25
+      - pause:
+          duration: 2m
+      - setWeight: 50
+      - pause:
+          duration: 2m
+      - setWeight: 100

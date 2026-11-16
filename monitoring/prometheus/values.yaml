@@ -1,0 +1,16 @@
+# Override the admin password with --set grafana.adminPassword=... at install time.
+grafana:
+  enabled: true
+  service:
+    type: ClusterIP
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelector: {}
+    serviceMonitorNamespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: monitoring
+    podMonitorSelector: {} # Do NOT apply k8s/canary/podmonitor.yaml concurrently.
+    retention: 3d
+alertmanager:
+  enabled: false

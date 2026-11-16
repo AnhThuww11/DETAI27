@@ -102,3 +102,21 @@ Rollout bị hủy, xác nhận traffic quay về V1.
 | Không phân biệt được V1/V2 tốt | Hai bản giống hệt nhau khi `FAIL=false` | Dùng V2 lỗi (mã 500) để đếm; đề xuất TV1 thêm `/version` |
 | `kubectl` mất kết nối sau khi nghỉ | Minikube dừng | `minikube start`, mở lại port-forward |
 | Lệnh `k6` không nhận | PATH chưa cập nhật | Mở lại terminal (hoặc VS Code) |
+
+---
+
+## 4. TV3 - Monitoring and automatic abort (integration validation pending)
+
+This section is NOT proof of a successful automatic abort. The earlier manual Canary abort in section 3 is a separate test.
+
+| Check | Actual UTC time | Observed value / evidence | Result |
+|---|---|---|---|
+| Prometheus ServiceMonitor / targets UP | Not run | `docs/evidence/`, Prometheus Targets screenshot | Pending |
+| Canary traffic rate | Not run | PromQL request rate + traffic generator log | Pending |
+| Canary HTTP 5xx rate | Not run | PromQL measured ratio | Pending |
+| Canary latency P95 | Not run | PromQL measured seconds | Pending |
+| AnalysisRun Failed | Not run | AnalysisRun yaml + screenshot | Pending |
+| Rollout Aborted | Not run | Rollout describe + screenshot | Pending |
+| Ingress restored to V1 HTTP 200 | Not run | Timestamped 200 responses and Service endpoints | Pending |
+
+Add real screenshots to `docs/images/` and command outputs to `docs/evidence/` after running the [Monitoring instructions](../monitoring/README.md). Do not present the previous manually aborted rollout as an automatic rollback test.
