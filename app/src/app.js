@@ -1,41 +1,39 @@
-const express = require('express');
-const client = require('prom-client');
+const express = require("express");
+const client = require("prom-client");
 
 const app = express();
 const port = process.env.PORT || 3000;
-const isError = process.env.FAIL === 'true';
+const isError = process.env.FAIL === "true";
 
 // Prometheus setup
 const register = new client.Registry();
 client.collectDefaultMetrics({ register });
 
 const httpRequestsTotal = new client.Counter({
-  name: 'http_requests_total',
-  help: 'Total number of HTTP requests',
-  labelNames: ['method', 'route', 'status'],
+  name: "http_requests_total",
+  help: "Total number of HTTP requests",
+  labelNames: ["method", "route", "status"],
   registers: [register],
 });
 
 const httpRequestDuration = new client.Histogram({
-  name: 'http_request_duration_seconds',
-  help: 'HTTP request duration in seconds',
-  labelNames: ['method', 'route', 'status'],
+  name: "http_request_duration_seconds",
+  help: "HTTP request duration in seconds",
+  labelNames: ["method", "route", "status"],
   buckets: [0.05, 0.1, 0.3, 0.5, 1, 2, 5],
   registers: [register],
 });
 
 // Metrics middleware
 app.use((req, res, next) => {
-  if (req.path === '/metrics') {
+  if (req.path === "/metrics") {
     return next();
   }
 
   const start = process.hrtime();
 
-  res.on('finish', () => {
-    const duration =
-      process.hrtime(start)[0] +
-      process.hrtime(start)[1] / 1e9;
+  res.on("finish", () => {
+    const duration = process.hrtime(start)[0] + process.hrtime(start)[1] / 1e9;
 
     const labels = {
       method: req.method,
@@ -53,10 +51,10 @@ app.use((req, res, next) => {
 // Template renderer
 const getPageHtml = () => {
   const badgeText = isError
-    ? 'VERSION 2.0 · UNHEALTHY'
-    : 'VERSION 1.0 · HEALTHY';
+    ? "VERSION 2.0 · UNHEALTHY"
+    : "VERSION 1.0 · HEALTHY";
 
-  const statusClass = isError ? 'unhealthy' : 'healthy';
+  const statusClass = isError ? "unhealthy" : "healthy";
 
   return `
   <!DOCTYPE html>
@@ -525,14 +523,18 @@ const getPageHtml = () => {
       </div>
     </header>
 
-    ${isError ? `
+    ${
+      isError
+        ? `
       <div class="error-alert">
         <strong>⚠ PHIÊN BẢN ĐANG GIẢ LẬP LỖI:</strong>
         V2 đang được cấu hình để trả về HTTP 500.
         Đây là tình huống thử nghiệm phục vụ việc đánh giá
         khả năng phát hiện lỗi và tự động rollback.
       </div>
-    ` : ''}
+    `
+        : ""
+    }
 
     <section class="section" id="about">
       <div class="about-layout">
@@ -678,8 +680,8 @@ const getPageHtml = () => {
             <span>03</span>
           </div>
 
-          <h3>HỌ VÀ TÊN THÀNH VIÊN 3</h3>
-          <div class="student-id">MSSV: ................</div>
+          <h3> Nguyễn Công Nhật Hưng </h3>
+          <div class="student-id">MSSV: 030205019516 </div>
 
           <span class="member-role">MONITORING & ROLLBACK</span>
 
@@ -705,28 +707,28 @@ const getPageHtml = () => {
 };
 
 // Routes
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   res.status(isError ? 500 : 200).send(getPageHtml());
 });
 
-app.get('/health', (req, res) => {
+app.get("/health", (req, res) => {
   if (isError) {
-    return res.status(500).send('ERROR');
+    return res.status(500).send("ERROR");
   }
 
-  res.status(200).send('OK');
+  res.status(200).send("OK");
 });
 
-app.get('/metrics', async (req, res) => {
+app.get("/metrics", async (req, res) => {
   try {
-    res.set('Content-Type', register.contentType);
+    res.set("Content-Type", register.contentType);
     res.end(await register.metrics());
   } catch (error) {
-    res.status(500).send('Unable to collect metrics');
+    res.status(500).send("Unable to collect metrics");
   }
 });
 
 app.listen(port, () => {
   console.log(`App running at http://localhost:${port}`);
-  console.log(`Version status: ${isError ? 'UNHEALTHY' : 'HEALTHY'}`);
+  console.log(`Version status: ${isError ? "UNHEALTHY" : "HEALTHY"}`);
 });
